@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://md.page/og-image.svg" alt="md.page" width="400">
+  <img src="https://md.page/logo.svg" alt="# md.page" height="50">
 </p>
 
 <h3 align="center">Markdown in, beautiful page out.</h3>
