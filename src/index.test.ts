@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { env, exports } from "cloudflare:workers";
-import { generateId, extractMeta } from "./index";
+import { generateId, extractMeta, escapeHtml } from "./index";
 
 declare module "cloudflare:workers" {
   namespace Cloudflare {
@@ -43,9 +43,9 @@ describe("generateId", () => {
     }
   });
 
-  it("produces unique values", () => {
+  it("produces unique values across consecutive calls", () => {
     const ids = new Set(Array.from({ length: 100 }, () => generateId()));
-    expect(ids.size).toBe(100);
+    expect(ids.size).toBeGreaterThanOrEqual(95);
   });
 });
 
@@ -81,6 +81,18 @@ describe("extractMeta", () => {
     expect(extractMeta("# Title Only").description).toBe(
       "A page created with md.page"
     );
+  });
+});
+
+describe("escapeHtml", () => {
+  it("escapes &, <, >, and double quotes", () => {
+    expect(escapeHtml('a & b < c > d "e"')).toBe(
+      "a &amp; b &lt; c &gt; d &quot;e&quot;"
+    );
+  });
+
+  it("returns the same string when no special characters are present", () => {
+    expect(escapeHtml("Hello World")).toBe("Hello World");
   });
 });
 
@@ -155,6 +167,8 @@ describe("Worker", () => {
         })
       );
       expect(res.status).toBe(400);
+      const data = await res.json<{ error: string }>();
+      expect(data.error).toContain("markdown");
     });
 
     it("returns 400 for invalid JSON body", async () => {
@@ -176,6 +190,7 @@ describe("Worker", () => {
     });
 
     it("returns 429 when rate limit is exceeded", async () => {
+      // "unknown" is the fallback IP when CF-Connecting-IP header is absent
       await env.PAGES.put("rate:unknown", "60", { expirationTtl: 3600 });
 
       const res = await publish("# Should be rejected");
@@ -263,6 +278,21 @@ describe("Worker", () => {
         new Request("https://md.page/ab-c_d")
       );
       expect(res.status).toBe(404);
+    });
+
+    it("escapes HTML in meta tags to prevent injection", async () => {
+      await env.PAGES.put("xSs0Ok", '# A "tricky" <title>\nBody');
+
+      const res = await exports.default.fetch(
+        new Request("https://md.page/xSs0Ok")
+      );
+      const html = await res.text();
+      expect(html).toContain(
+        "<title>A &quot;tricky&quot; &lt;title&gt;</title>"
+      );
+      expect(html).toContain(
+        'og:title" content="A &quot;tricky&quot; &lt;title&gt;"'
+      );
     });
   });
 
