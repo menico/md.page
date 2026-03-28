@@ -103,8 +103,8 @@ md.page runs on Cloudflare Workers with KV storage. Deploy your own instance:
 
 ```bash
 # Clone the repo
-git clone https://github.com/maypaz/mdpage.git
-cd mdpage
+git clone https://github.com/maypaz/md.page.git
+cd md.page
 
 # Install dependencies
 npm install
