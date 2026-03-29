@@ -85,7 +85,8 @@ function getFonts(): Promise<{ bold: ArrayBuffer; regular: ArrayBuffer }> {
     fontPromise = Promise.all([
       fetch(FONT_URL_BOLD).then(r => r.arrayBuffer()),
       fetch(FONT_URL_REGULAR).then(r => r.arrayBuffer()),
-    ]).then(([bold, regular]) => ({ bold, regular }));
+    ]).then(([bold, regular]) => ({ bold, regular }))
+      .catch(err => { fontPromise = null; throw err; });
   }
   return fontPromise;
 }
@@ -95,11 +96,15 @@ export function wrapText(text: string, maxCharsPerLine: number, maxLines = 3): s
   const lines: string[] = [];
   let currentLine = "";
   for (const word of words) {
-    if (currentLine && (currentLine + " " + word).length > maxCharsPerLine) {
+    // Truncate individual words that exceed the line width
+    const truncatedWord = word.length > maxCharsPerLine
+      ? word.slice(0, maxCharsPerLine - 3) + "..."
+      : word;
+    if (currentLine && (currentLine + " " + truncatedWord).length > maxCharsPerLine) {
       lines.push(currentLine);
-      currentLine = word;
+      currentLine = truncatedWord;
     } else {
-      currentLine = currentLine ? currentLine + " " + word : word;
+      currentLine = currentLine ? currentLine + " " + truncatedWord : truncatedWord;
     }
   }
   if (currentLine) lines.push(currentLine);
@@ -206,6 +211,7 @@ export function generateOgSvg(title: string, markdownOrText: string): string {
         const visibleLines = block.lines.slice(0, Math.min(block.lines.length, Math.floor((maxY - y - codePad * 2) / codeLh)));
         if (visibleLines.length === 0) break;
         const codeH = visibleLines.length * codeLh + codePad * 2;
+        // Allow code blocks to slightly overflow (40px) into the fade-out gradient zone
         if (y + codeH > maxY + 40) break;
         svg += `<rect x="${cx}" y="${y}" width="${cw}" height="${codeH}" rx="8" fill="#1e1e1e"/>`;
         visibleLines.forEach((line, i) => {

@@ -179,9 +179,9 @@ describe("wrapText", () => {
     expect(wrapText("hello", 50)).toEqual(["hello"]);
   });
 
-  it("handles a single long word that exceeds maxCharsPerLine", () => {
+  it("truncates a single long word that exceeds maxCharsPerLine", () => {
     const lines = wrapText("supercalifragilistic", 10);
-    expect(lines).toEqual(["supercalifragilistic"]);
+    expect(lines).toEqual(["superca..."]);
   });
 
   it("defaults maxLines to 3", () => {
