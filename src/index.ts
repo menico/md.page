@@ -296,6 +296,7 @@ const HTML_TEMPLATE = (content: string, options: TemplateOptions = {}) => {
   <meta property="og:title" content="${safeTitle}">
   <meta property="og:description" content="${safeDesc}">
   <meta property="og:image" content="${ogImage}">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:url" content="${pageUrl}">
@@ -557,6 +558,7 @@ export default {
   <meta property="og:title" content="md.page">
   <meta property="og:description" content="Instantly convert Markdown to a shareable HTML page.">
   <meta property="og:image" content="${url.origin}/og-image.png">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:url" content="${url.origin}">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
