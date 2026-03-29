@@ -4,3 +4,4 @@ node_modules/
 wrangler.toml
 PLAN.md
 scripts/
+.env.local

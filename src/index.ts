@@ -37,9 +37,8 @@ export function extractMeta(markdown: string): { title: string; description: str
 }
 
 const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <path d="M10,2 L24,2 L30,8 L30,30 L10,30 Z" fill="none" stroke="#1a3a7a" stroke-width="2" stroke-linejoin="round"/>
-  <path d="M24,2 L24,8 L30,8" fill="none" stroke="#1a3a7a" stroke-width="2" stroke-linejoin="round"/>
-  <text x="13" y="24" font-family="ui-monospace, 'SF Mono', SFMono-Regular, monospace" font-size="22" font-weight="700" fill="#1a3a7a" text-anchor="middle">#</text>
+  <rect width="32" height="32" rx="7" fill="#4285F4"/>
+  <text x="16" y="26" font-family="Arial,sans-serif" font-size="28" font-weight="900" fill="#fff" text-anchor="middle">#</text>
 </svg>`;
 
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="280" height="50" viewBox="0 0 280 50">
@@ -163,7 +162,7 @@ const HTML_TEMPLATE = (content: string, title = "md.page", description = "Instan
 <body>
   <div class="container">${content}</div>
   <div class="footer">
-    <a href="https://md.page" target="_blank">✨ Made with <span class="brand"><strong>#</strong><span style="margin-left:0.1em">md.page</span></span></a>
+    <a href="https://md.page" target="_blank">&#10024; Made with <span class="brand"><strong>#</strong><span style="margin-left:0.1em">md.page</span></span></a>
   </div>
 </body>
 </html>`;
@@ -348,7 +347,7 @@ export default {
       .container { background: #2a2a2a; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
       .subtitle { color: #d1d5db; }
       .detail { color: #b0b0b0; }
-      .btn-github { background: #444; }
+      .btn-github { background: #444; border: 1px solid rgba(255,255,255,0.3); }
       .btn-github:hover { background: #555; }
       .btn-agent { background: #3b6fd4; }
       .btn-agent:hover { background: #2d5bb8; }
@@ -360,12 +359,12 @@ export default {
 <body>
   <div class="container">
     <img src="/logo.svg" alt="# md.page" height="50">
-    <p class="subtitle">Markdown in, beautiful page out. ✨</p>
+    <p class="subtitle">Markdown in, beautiful page out. &#10024;</p>
     <p class="detail" style="font-size: 0.9rem; font-weight: 600;">Free & open source.</p>
     <p class="detail" style="margin-bottom: 0.75rem;">No accounts, no API keys, no limits.</p>
     <div class="buttons">
-      <a href="https://github.com/maypaz/md.page" target="_blank" class="btn btn-github"><svg width="18" height="18" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> ⭐ GitHub</a>
-      <button onclick="copyAgentPrompt()" class="btn btn-agent">🤖 Copy prompt for your AI agent</button>
+      <a href="https://github.com/maypaz/md.page" target="_blank" class="btn btn-github"><svg width="18" height="18" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> &#11088; GitHub</a>
+      <button onclick="copyAgentPrompt()" class="btn btn-agent">&#129302; Copy prompt for your AI agent</button>
     </div>
     <p id="copied-msg">Copied! Paste it into OpenClaw or any AI agent.</p>
     <pre><code>curl -X POST https://md.page/api/publish \\
@@ -373,9 +372,10 @@ export default {
 
 → { "url": "https://md.page/a8Xk2m" }</code></pre>
     <p class="features">
-      <span>⚡ Instant</span> <span>🔗 Short URLs</span> <span>🕐 24h expiry</span> <span>🔒 Private links</span>
+      <span>&#9889; Instant</span> <span>&#128279; Short URLs</span> <span>&#128336; 24h expiry</span> <span>&#128274; Private links</span>
     </p>
   </div>
+  <p style="margin-top: 1rem; text-align: center; font-size: 0.75rem;"><a href="/privacy" style="color: #6b7280; text-decoration: none;">Privacy Policy</a></p>
   <script>
     function copyAgentPrompt() {
       navigator.clipboard.writeText("From now on, whenever I ask you to share or publish a markdown file, use the md.page API to create a shareable HTML page. Send a POST request to https://md.page/api/publish with the body {\\"markdown\\": \\"<content>\\"} and return the shareable URL to me.");
@@ -386,6 +386,54 @@ export default {
 </body>
 </html>`;
       return new Response(homepage, { headers: { "Content-Type": "text/html;charset=UTF-8" } });
+    }
+
+    // Privacy policy
+    if (url.pathname === "/privacy") {
+      const privacy = HTML_TEMPLATE(`
+<h1>Privacy Policy</h1>
+<p><strong>Last updated:</strong> March 29, 2026</p>
+
+<h2>What md.page does</h2>
+<p>md.page converts Markdown into shareable HTML pages. No account, login, or API key is required.</p>
+
+<h2>No password protection</h2>
+<p>Published pages are <strong>not password-protected or encrypted</strong>. Anyone with the link can view your page. By publishing content to md.page, you acknowledge that the content is accessible to anyone who has or discovers the URL.</p>
+
+<h2>Obscurity, not secrecy</h2>
+<p>Each page is assigned a short, random 6-character ID (e.g. <code>a8Xk2m</code>), drawn from 62 alphanumeric characters. This gives roughly 56 billion possible combinations, making it extremely unlikely that someone will stumble upon your page by guessing. However, this is <strong>security through obscurity, not access control</strong> — do not publish sensitive, confidential, or personal information.</p>
+
+<h2>Rate limiting</h2>
+<p>To protect against brute-force enumeration of page IDs, md.page enforces rate limits on both publishing and page access. Automated scanning or scraping is not permitted.</p>
+
+<h2>Automatic expiry</h2>
+<p>All pages expire automatically after <strong>24 hours</strong>. Once expired, the content is permanently deleted from our servers and cannot be recovered.</p>
+
+<h2>Data we store</h2>
+<ul>
+  <li><strong>Page content:</strong> The rendered HTML of your Markdown, stored in Cloudflare KV for up to 24 hours.</li>
+  <li><strong>Rate-limit counters:</strong> Your IP address is used to enforce rate limits. These counters expire within 1 hour and are not used for any other purpose.</li>
+</ul>
+<p>We do not store your original Markdown source. We do not use cookies, analytics, tracking pixels, or any third-party tracking services.</p>
+
+<h2>Data we do NOT collect</h2>
+<ul>
+  <li>No accounts or personal information</li>
+  <li>No cookies or browser fingerprinting</li>
+  <li>No advertising or data sharing with third parties</li>
+</ul>
+
+<h2>Infrastructure</h2>
+<p>md.page runs on <a href="https://workers.cloudflare.com" target="_blank" rel="noopener">Cloudflare Workers</a> and uses <a href="https://developers.cloudflare.com/kv/" target="_blank" rel="noopener">Cloudflare KV</a> for storage. Cloudflare may process requests according to their own <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener">privacy policy</a>.</p>
+
+<h2>Your responsibility</h2>
+<p>Do not publish content that is illegal, harmful, or that you do not have the right to share. Do not publish sensitive personal data, passwords, API keys, or confidential information — pages are publicly accessible to anyone with the link.</p>
+
+<h2>Contact</h2>
+<p>md.page is open source. For questions or concerns, please <a href="https://github.com/maypaz/md.page/issues" target="_blank" rel="noopener">open an issue on GitHub</a>.</p>
+`, "Privacy Policy — md.page", "Privacy policy for md.page — how your data is handled.");
+
+      return new Response(privacy, { headers: { "Content-Type": "text/html;charset=UTF-8" } });
     }
 
     return new Response("Not found", { status: 404 });

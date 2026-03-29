@@ -284,6 +284,14 @@ describe("Worker", () => {
       expect(res.status).toBe(404);
     });
 
+    it("escapes HTML tags in markdown body to prevent XSS", async () => {
+      const res = await publish('<script>alert("xss")</script>');
+      const { url } = await res.json<{ url: string }>();
+      const page = await exports.default.fetch(new Request(url));
+      const html = await page.text();
+      expect(html).not.toContain("<script>");
+    });
+
     it("escapes HTML in meta tags to prevent injection", async () => {
       await env.PAGES.put("xSs0Ok", JSON.stringify({ html: "<p>Body</p>\n", title: 'A "tricky" <title>', description: "Body" }));
 
