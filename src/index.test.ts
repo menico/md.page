@@ -369,15 +369,15 @@ describe("Worker", () => {
       );
     });
 
-    it("uses PNG format for og:image, not SVG", async () => {
+    it("uses dynamic per-page OG image URL", async () => {
       await env.PAGES.put("oPnG01", JSON.stringify({ html: "<p>Test</p>\n", title: "Test", description: "Test" }));
       const res = await exports.default.fetch(
         new Request("https://md.page/oPnG01")
       );
       const html = await res.text();
-      expect(html).toContain('og:image" content="https://md.page/og-image.png"');
+      expect(html).toContain('og:image" content="https://md.page/og/oPnG01.png"');
       expect(html).not.toContain('og:image" content="https://md.page/og-image.svg"');
-      expect(html).toContain('twitter:image" content="https://md.page/og-image.png"');
+      expect(html).toContain('twitter:image" content="https://md.page/og/oPnG01.png"');
     });
 
     it("sets og:url to the actual page URL, not the homepage", async () => {
@@ -395,7 +395,7 @@ describe("Worker", () => {
         new Request("https://docs.mycompany.com/sElF01")
       );
       const html = await res.text();
-      expect(html).toContain('og:image" content="https://docs.mycompany.com/og-image.png"');
+      expect(html).toContain('og:image" content="https://docs.mycompany.com/og/sElF01.png"');
       expect(html).toContain('og:url" content="https://docs.mycompany.com/sElF01"');
     });
   });
