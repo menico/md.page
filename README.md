@@ -104,13 +104,22 @@ curl -X POST https://md.page/api/publish \
 |--------|-------------|
 | `400` | Missing or invalid `markdown` field |
 | `413` | Content too large (max 500KB) |
-| `429` | Rate limit exceeded (60 pages/hour per IP) |
 
 ### `GET /:id`
 
 View a published page. Returns rendered HTML.
 
 ## Use with AI Agents
+
+### Claude Code Skill
+
+Install the [md.page skill](https://skills.sh/maypaz/publish-to-mdpage) to let Claude Code publish markdown as shareable web pages:
+
+```bash
+npx skills add maypaz/publish-to-mdpage
+```
+
+Then just ask Claude to "share this" or "publish this markdown" and it will create a link for you.
 
 ### Prompt-Based
 
