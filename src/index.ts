@@ -65,18 +65,32 @@ function track(env: Env, event: string, detail = "") {
 }
 
 
-const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="7" fill="#4285F4"/>
-  <text x="16" y="26" font-family="Arial,sans-serif" font-size="28" font-weight="900" fill="#fff" text-anchor="middle">#</text>
+const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="11" fill="#4285F4"/>
+  <g stroke="#fff" stroke-width="4.5" stroke-linecap="round" fill="none" transform="translate(11, 8)">
+    <line x1="11" y1="2" x2="7" y2="32"/>
+    <line x1="21" y1="2" x2="17" y2="32"/>
+    <line x1="4" y1="11" x2="25" y2="11"/>
+    <line x1="3" y1="23" x2="24" y2="23"/>
+  </g>
 </svg>`;
 
-const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="280" height="50" viewBox="0 0 280 50">
+const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="50" viewBox="0 0 300 50">
   <style>
-    @media (prefers-color-scheme: dark) { .logo-hash { fill: #60a5fa; } .logo-text { fill: #e5e5e5; } }
+    @media (prefers-color-scheme: dark) { .logo-text { fill: #e5e5e5; } }
   </style>
-  <text x="140" y="40" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Courier New', monospace" font-size="42" font-weight="700" text-anchor="middle" letter-spacing="-1">
-    <tspan class="logo-hash" fill="#1a3a7a">#</tspan><tspan class="logo-text" fill="#1a1a1a"> md.page</tspan>
-  </text>
+  <g transform="translate(22, 0)">
+    <rect x="0" y="1" width="48" height="48" rx="11" fill="#4285F4"/>
+    <g stroke="#fff" stroke-width="4.5" stroke-linecap="round" fill="none" transform="translate(11, 9)">
+      <line x1="11" y1="2" x2="7" y2="32"/>
+      <line x1="21" y1="2" x2="17" y2="32"/>
+      <line x1="4" y1="11" x2="25" y2="11"/>
+      <line x1="3" y1="23" x2="24" y2="23"/>
+    </g>
+    <text x="60" y="25" font-family="ui-monospace, 'SF Mono', SFMono-Regular, 'Courier New', monospace" font-size="42" font-weight="700" text-anchor="start" letter-spacing="-1" dominant-baseline="central">
+      <tspan class="logo-text" fill="#1a1a1a">md.page</tspan>
+    </text>
+  </g>
 </svg>`;
 
 interface PageData {
@@ -636,8 +650,21 @@ export default {
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #1a1a1a; background: #fafafa; padding: 2rem 1rem; }
     .container { max-width: 720px; margin: 0 auto; background: #fff; border-radius: 8px; padding: 2.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.08); text-align: center; }
-    pre { background: #1e1e1e; color: #d4d4d4; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1.5rem 0 1rem; text-align: left; }
+    .code-block { background: #1e1e1e; border-radius: 8px; margin: 1.25rem 0 0.75rem; overflow: hidden; }
+    .code-header { display: flex; align-items: center; padding: 0.6rem 1rem 0; gap: 0.4rem; }
+    .code-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .code-dot-red { background: #ff5f57; }
+    .code-dot-yellow { background: #febc2e; }
+    .code-dot-green { background: #28c840; }
+    .code-label { color: #888; font-size: 0.65rem; margin-left: auto; font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 0.05em; }
+    pre { background: #1e1e1e; color: #d4d4d4; padding: 0.75rem 1rem 1rem; margin: 0; text-align: left; overflow-x: auto; }
     code { font-size: 0.8rem; }
+    .cmd { color: #98c379; }
+    .arg { color: #d4d4d4; }
+    .flag { color: #61afef; }
+    .output { color: #888; }
+    .str { color: #e5c07b; }
+    .url { color: #61afef; }
     .buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center; }
     .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; border: none; cursor: pointer; color: #fff; }
     .btn-github { background: #24292e; }
@@ -655,6 +682,7 @@ export default {
       .buttons { flex-direction: column; width: 100%; }
       .btn { justify-content: center; width: 100%; }
       pre { font-size: 0.7rem; overflow-x: hidden; white-space: pre-wrap; word-break: break-all; }
+      .code-block { margin: 1rem 0 0.5rem; }
       .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.75rem; }
     }
     @media (prefers-color-scheme: dark) {
@@ -674,23 +702,40 @@ export default {
 </head>
 <body>
   <div class="container">
-    <img src="/logo.svg" alt="# md.page" height="50">
+    <img src="/logo.svg" alt="# md.page" height="50" style="display: inline-block;">
     <p class="subtitle">Markdown in, beautiful page out. &#10024;</p>
     <p class="free-badge" style="font-size: 1.05rem; font-weight: 700; color: #1a3a7a; margin-bottom: 0.25rem;">100% free. No catch.</p>
-    <p class="detail" style="margin-bottom: 0.75rem;">Open source. No accounts, no API keys, no limits. Free forever.</p>
+    <p class="detail" style="margin-bottom: 0.75rem;">Open source. No accounts, no API keys, no limits.</p>
     <div class="buttons">
       <a href="https://github.com/maypaz/md.page" target="_blank" class="btn btn-github" onclick="trackClick('github_click')"><svg width="18" height="18" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> &#11088; GitHub</a>
       <button onclick="copyAgentPrompt()" class="btn btn-agent">&#129302; Copy prompt for your AI agent</button>
     </div>
     <p id="copied-msg">Copied! Paste it into OpenClaw or any AI agent.</p>
-    <pre><code>npx mdpage-cli README.md
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot code-dot-red"></span>
+        <span class="code-dot code-dot-yellow"></span>
+        <span class="code-dot code-dot-green"></span>
+        <span class="code-label">Terminal</span>
+      </div>
+      <pre><code><span class="output">$</span> <span class="cmd">npx</span> <span class="arg">mdpage-cli</span> <span class="flag">README.md</span>
 
-→ Published → https://md.page/a8Xk2m</code></pre>
-    <p class="detail" style="margin-top: 0.5rem; margin-bottom: 1rem;">or use the API directly:</p>
-    <pre><code>curl -X POST https://md.page/api/publish \\
-  -d '{"markdown": "# Hello World"}'
+  <span class="output">Published →</span> <span class="url">https://md.page/a8Xk2m</span>
+  <span class="output">Expires in 24h</span></code></pre>
+    </div>
+    <p class="detail" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">or use the API directly:</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="code-dot code-dot-red"></span>
+        <span class="code-dot code-dot-yellow"></span>
+        <span class="code-dot code-dot-green"></span>
+        <span class="code-label">API</span>
+      </div>
+      <pre><code><span class="output">$</span> <span class="cmd">curl</span> <span class="flag">-X POST</span> <span class="url">https://md.page/api/publish</span> \\
+  <span class="flag">-d</span> <span class="str">'{"markdown": "# Hello World"}'</span>
 
-→ { "url": "https://md.page/a8Xk2m" }</code></pre>
+  <span class="output">→</span> <span class="str">{ "url": "https://md.page/a8Xk2m" }</span></code></pre>
+    </div>
     <p class="features">
       <span>&#9889; Instant</span> <span>&#128279; Short URLs</span> <span>&#128336; 24h expiry</span> <span>&#128274; Private links</span>
     </p>
