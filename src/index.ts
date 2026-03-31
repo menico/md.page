@@ -400,6 +400,13 @@ const HTML_TEMPLATE = (content: string, options: TemplateOptions = {}) => {
       .footer a:hover { color: #60a5fa; }
       .footer .brand { color: #60a5fa; }
     }
+    @media (max-width: 600px) {
+      body { padding: 0; background: #fff; }
+      .container { max-width: 100%; border-radius: 0; box-shadow: none; padding: 1.25rem 1rem; }
+      @media (prefers-color-scheme: dark) {
+        body { background: #2a2a2a; }
+      }
+    }
   </style>
 </head>
 <body>
