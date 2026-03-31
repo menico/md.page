@@ -75,6 +75,8 @@ const FAVICON_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="
   </g>
 </svg>`;
 
+const CLAUDE_LOGO_SVG = `<svg width="248" height="248" viewBox="0 0 248 248" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M52.4285 162.873L98.7844 136.879L99.5485 134.602L98.7844 133.334H96.4921L88.7237 132.862L62.2346 132.153L39.3113 131.207L17.0249 130.026L11.4214 128.844L6.2 121.873L6.7094 118.447L11.4214 115.257L18.171 115.847L33.0711 116.911L55.485 118.447L71.6586 119.392L95.728 121.873H99.5485L100.058 120.337L98.7844 119.392L97.7656 118.447L74.5877 102.732L49.4995 86.1905L36.3823 76.62L29.3779 71.7757L25.8121 67.2858L24.2839 57.3608L30.6515 50.2716L39.3113 50.8623L41.4763 51.4531L50.2636 58.1879L68.9842 72.7209L93.4357 90.6804L97.0015 93.6343L98.4374 92.6652L98.6571 91.9801L97.0015 89.2625L83.757 65.2772L69.621 40.8192L63.2534 30.6579L61.5978 24.632C60.9565 22.1032 60.579 20.0111 60.579 17.4246L67.8381 7.49965L71.9133 6.19995L81.7193 7.49965L85.7946 11.0443L91.9074 24.9865L101.714 46.8451L116.996 76.62L121.453 85.4816L123.873 93.6343L124.764 96.1155H126.292V94.6976L127.566 77.9197L129.858 57.3608L132.15 30.8942L132.915 23.4505L136.608 14.4708L143.994 9.62643L149.725 12.344L154.437 19.0788L153.8 23.4505L150.998 41.6463L145.522 70.1215L141.957 89.2625H143.994L146.414 86.7813L156.093 74.0206L172.266 53.698L179.398 45.6635L187.803 36.802L193.152 32.5484H203.34L210.726 43.6549L207.415 55.1159L196.972 68.3492L188.312 79.5739L175.896 96.2095L168.191 109.585L168.882 110.689L170.738 110.53L198.755 104.504L213.91 101.787L231.994 98.7149L240.144 102.496L241.036 106.395L237.852 114.311L218.495 119.037L195.826 123.645L162.07 131.592L161.696 131.893L162.137 132.547L177.36 133.925L183.855 134.279H199.774L229.447 136.524L237.215 141.605L241.8 147.867L241.036 152.711L229.065 158.737L213.019 154.956L175.45 145.977L162.587 142.787H160.805V143.85L171.502 154.366L191.242 172.089L215.82 195.011L217.094 200.682L213.91 205.172L210.599 204.699L188.949 188.394L180.544 181.069L161.696 165.118H160.422V166.772L164.752 173.152L187.803 207.771L188.949 218.405L187.294 221.832L181.308 223.959L174.813 222.777L161.187 203.754L147.305 182.486L136.098 163.345L134.745 164.2L128.075 235.42L125.019 239.082L117.887 241.8L111.902 237.31L108.718 229.984L111.902 215.452L115.722 196.547L118.779 181.541L121.58 162.873L123.291 156.636L123.14 156.219L121.773 156.449L107.699 175.752L86.304 204.699L69.3663 222.777L65.291 224.431L58.2867 220.768L58.9235 214.27L62.8713 208.48L86.304 178.705L100.44 160.155L109.551 149.507L109.462 147.967L108.959 147.924L46.6977 188.512L35.6182 189.93L30.7788 185.44L31.4156 178.115L33.7079 175.752L52.4285 162.873Z" fill="#D97757"/></svg>`;
+
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="300" height="50" viewBox="0 0 300 50">
   <style>
     @media (prefers-color-scheme: dark) { .logo-text { fill: #e5e5e5; } }
@@ -451,7 +453,7 @@ export default {
     if (url.pathname === "/api/event" && request.method === "POST") {
       try {
         const body = await request.json<{ event: string }>();
-        const allowed = ["github_click", "copy_prompt_click"];
+        const allowed = ["github_click", "copy_prompt_click", "copy_skill_claude", "copy_skill_openclaw"];
         if (body.event && allowed.includes(body.event)) {
           track(env, body.event);
         }
@@ -608,6 +610,16 @@ export default {
       });
     }
 
+    // Claude logo
+    if (url.pathname === "/claude-logo.svg") {
+      return new Response(CLAUDE_LOGO_SVG, {
+        headers: {
+          "Content-Type": "image/svg+xml",
+          "Cache-Control": "public, max-age=86400",
+        },
+      });
+    }
+
     // Logo
     if (url.pathname === "/logo.svg") {
       return new Response(LOGO_SVG, {
@@ -669,13 +681,24 @@ export default {
     .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; border: none; cursor: pointer; color: #fff; }
     .btn-github { background: #24292e; }
     .btn-github:hover { background: #1b1f23; }
-    .btn-agent { background: #1a3a7a; }
-    .btn-agent:hover { background: #142d61; }
     .subtitle { font-size: 1.1rem; color: #4b5563; margin-bottom: 0.75rem; }
     .detail { font-size: 0.8rem; color: #6b7280; margin-bottom: 0.25rem; }
     #copied-msg { margin-top: 0.4rem; color: #1a3a7a; font-size: 0.75rem; opacity: 0; transition: opacity 0.3s; }
     .features { font-size: 0.85rem; color: #6b7280; }
     .features span { white-space: nowrap; }
+    .skill-cards { display: flex; gap: 0.75rem; margin: 0.75rem 0; }
+    .skill-card { flex: 1; border: 1px solid #e5e7eb; border-radius: 10px; padding: 1rem 0.75rem 0.85rem; text-align: left; transition: border-color 0.2s, box-shadow 0.2s; }
+    .skill-card:hover { border-color: #d1d5db; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    .skill-card-header { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+    .skill-card-logo { width: 22px; height: 22px; flex-shrink: 0; border-radius: 4px; }
+    .skill-card-name { font-size: 0.85rem; font-weight: 600; color: #1a1a1a; }
+    .skill-card-cmd-row { display: flex; align-items: center; gap: 0.4rem; }
+    .skill-card-cmd { flex: 1; font-family: ui-monospace, 'SF Mono', monospace; font-size: 0.72rem; color: #6b7280; background: #f5f5f5; border-radius: 5px; padding: 0.4rem 0.6rem; word-break: break-all; }
+    .skill-copy-btn { flex-shrink: 0; background: none; border: 1px solid #e5e7eb; border-radius: 5px; padding: 0.35rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+    .skill-copy-btn:hover { background: #f0f0f0; border-color: #d1d5db; }
+    .skill-copy-btn svg { width: 14px; height: 14px; color: #9ca3af; }
+    .skill-copy-btn.copied svg { color: #16a34a; }
+    .skill-copy-btn.copied { border-color: #16a34a; }
     @media (max-width: 480px) {
       body { padding: 1rem 0.5rem; }
       .container { padding: 1.5rem 1rem; }
@@ -684,6 +707,7 @@ export default {
       pre { font-size: 0.7rem; overflow-x: hidden; white-space: pre-wrap; word-break: break-all; }
       .code-block { margin: 1rem 0 0.5rem; }
       .features { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.25rem 0.75rem; }
+      .skill-cards { flex-direction: column; }
     }
     @media (prefers-color-scheme: dark) {
       body { background: #1a1a1a; color: #e5e5e5; }
@@ -692,11 +716,16 @@ export default {
       .detail { color: #b0b0b0; }
       .btn-github { background: #444; border: 1px solid rgba(255,255,255,0.3); }
       .btn-github:hover { background: #555; }
-      .btn-agent { background: #3b6fd4; }
-      .btn-agent:hover { background: #2d5bb8; }
       .features { color: #9ca3af; }
       #copied-msg { color: #60a5fa; }
       .free-badge { color: #60a5fa !important; }
+      .skill-card { border-color: #444; background: #333; }
+      .skill-card:hover { border-color: #666; box-shadow: 0 2px 8px rgba(0,0,0,0.2); }
+      .skill-card-name { color: #e5e5e5; }
+      .skill-card-cmd { background: #2a2a2a; color: #b0b0b0; }
+      .skill-copy-btn { border-color: #555; }
+      .skill-copy-btn:hover { background: #444; border-color: #777; }
+      .skill-copy-btn svg { color: #777; }
     }
   </style>
 </head>
@@ -706,11 +735,31 @@ export default {
     <p class="subtitle">Markdown in, beautiful page out. &#10024;</p>
     <p class="free-badge" style="font-size: 1.05rem; font-weight: 700; color: #1a3a7a; margin-bottom: 0.25rem;">100% free. No catch.</p>
     <p class="detail" style="margin-bottom: 0.75rem;">Open source. No accounts, no API keys, no limits.</p>
-    <div class="buttons">
-      <a href="https://github.com/maypaz/md.page" target="_blank" class="btn btn-github" onclick="trackClick('github_click')"><svg width="18" height="18" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> &#11088; GitHub</a>
-      <button onclick="copyAgentPrompt()" class="btn btn-agent">&#129302; Copy prompt for your AI agent</button>
+    <a href="https://github.com/maypaz/md.page" target="_blank" class="btn btn-github" onclick="trackClick('github_click')" style="margin-bottom: 0.75rem;"><svg width="18" height="18" viewBox="0 0 16 16" fill="white"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg> &#11088; GitHub</a>
+    <p class="detail" style="margin-bottom: 0.5rem;">Add to your AI agent:</p>
+    <div class="skill-cards">
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <img class="skill-card-logo" src="/claude-logo.svg" alt="Claude">
+          <span class="skill-card-name">Claude Code</span>
+        </div>
+        <div class="skill-card-cmd-row">
+          <div class="skill-card-cmd">npx skills add maypaz/md.page</div>
+          <button class="skill-copy-btn" id="copy-btn-claude" onclick="copySkill('claude')" title="Copy to clipboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+        </div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-card-header">
+          <span style="font-size: 1.25rem; line-height: 1;">&#129438;</span>
+          <span class="skill-card-name">OpenClaw</span>
+        </div>
+        <div class="skill-card-cmd-row">
+          <div class="skill-card-cmd">npx clawhub@latest install publish-to-mdpage</div>
+          <button class="skill-copy-btn" id="copy-btn-openclaw" onclick="copySkill('openclaw')" title="Copy to clipboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button>
+        </div>
+      </div>
     </div>
-    <p id="copied-msg">Copied! Paste it into OpenClaw or any AI agent.</p>
+    <p class="detail" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">or use the CLI:</p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-dot code-dot-red"></span>
@@ -723,7 +772,7 @@ export default {
   <span class="output">Published →</span> <span class="url">https://md.page/a8Xk2m</span>
   <span class="output">Expires in 24h</span></code></pre>
     </div>
-    <p class="detail" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">or use the API directly:</p>
+    <p class="detail" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">or the API directly:</p>
     <div class="code-block">
       <div class="code-header">
         <span class="code-dot code-dot-red"></span>
@@ -739,20 +788,8 @@ export default {
     <p class="features">
       <span>&#9889; Instant</span> <span>&#128279; Short URLs</span> <span>&#128336; 24h expiry</span> <span>&#128274; Private links</span>
     </p>
-    <p class="detail" style="margin-top: 1rem; margin-bottom: 0.5rem;">Install as an AI skill:</p>
-    <div class="code-block">
-      <div class="code-header">
-        <span class="code-dot code-dot-red"></span>
-        <span class="code-dot code-dot-yellow"></span>
-        <span class="code-dot code-dot-green"></span>
-        <span class="code-label">Skills</span>
-      </div>
-      <pre><code><span class="output"># Claude Code</span>
-<span class="output">$</span> <span class="cmd">npx</span> <span class="arg">skills</span> <span class="flag">add</span> <span class="str">maypaz/md.page</span>
-
-<span class="output"># OpenClaw</span>
-<span class="output">$</span> <span class="cmd">npx</span> <span class="arg">clawhub@latest</span> <span class="flag">install</span> <span class="str">publish-to-mdpage</span></code></pre>
-    </div>
+    <p class="detail" style="margin-top: 0.75rem;"><button onclick="copyAgentPrompt()" style="background: none; border: none; color: #6b7280; cursor: pointer; font-size: 0.8rem; text-decoration: underline; padding: 0;">Using another agent? Copy this prompt instead</button></p>
+    <p id="copied-msg">Copied! Paste it into any AI agent.</p>
   </div>
   <p style="margin-top: 1rem; text-align: center; font-size: 0.75rem;"><a href="/privacy" style="color: #6b7280; text-decoration: none;">Privacy Policy</a></p>
   <script>
@@ -762,6 +799,18 @@ export default {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ event: event }),
       }).catch(function() {});
+    }
+    function copySkill(type) {
+      var cmds = { claude: 'npx skills add maypaz/md.page', openclaw: 'npx clawhub@latest install publish-to-mdpage' };
+      navigator.clipboard.writeText(cmds[type]);
+      var btn = document.getElementById('copy-btn-' + type);
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+      setTimeout(function() {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+      }, 2000);
+      trackClick('copy_skill_' + type);
     }
     function copyAgentPrompt() {
       navigator.clipboard.writeText("From now on, whenever I ask you to share or publish a markdown file, use the md.page API to create a shareable HTML page. Send a POST request to https://md.page/api/publish with the body {\\"markdown\\": \\"<content>\\"} and return the shareable URL to me.");
